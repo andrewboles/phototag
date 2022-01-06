@@ -4,11 +4,19 @@ import React from 'react'
 import "../styles/PhotoGame.css"
 
 const PhotoGame = (props) => {
-	const [photoList] = useOutletContext()
+	const [photoList, contextMenuLocation, setcontextMenuLocation] = useOutletContext()
+
+	const handleClick = (e) => {
+		if(contextMenuLocation.x){
+			setcontextMenuLocation({x: "", y: ""})
+		} else{
+			setcontextMenuLocation({x: e.pageX, y: e.pageY})
+		}
+	}
 
 	return(
-		<div>
-			<img src={photoList.convention}></img>
+		<div onClick={e=>{handleClick(e)}}>
+			<img id="main-image" src={photoList.convention}></img>
 		</div>
 		)
 
