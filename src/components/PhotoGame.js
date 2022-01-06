@@ -7,6 +7,8 @@ const PhotoGame = (props) => {
 	const [photoList, contextMenuLocation, setcontextMenuLocation] = useOutletContext()
 
 	const handleClick = (e) => {
+		console.log(e.pageX, e.pageY)
+	
 		if(contextMenuLocation.x){
 			setcontextMenuLocation({x: "", y: ""})
 		} else{
