@@ -9,7 +9,7 @@ const PhotoGame = (props) => {
 	const handleClick = (e) => {
 		console.log(e.pageX, e.pageY)
 	
-		if(contextMenuLocation.x){
+		if(contextMenuLocation.x !== ""){
 			setcontextMenuLocation({x: "", y: ""})
 		} else{
 			setcontextMenuLocation({x: e.pageX, y: e.pageY})

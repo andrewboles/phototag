@@ -13,7 +13,8 @@ import {
 
 import { getFirebaseConfig } from './firebase-config'
 
-import conventionpic from "../images/convention.jpeg" 
+import conventionpic from "../images/convention.jpeg"
+import captainPlanet from "../images/cp.jpeg"  
 
 import { initializeApp } from "firebase/app";
 
@@ -43,9 +44,11 @@ const app = initializeApp(firebaseConfig);
 export function App() {
 
   const [photoList, setphotoList] = useState({})
-  const [contextMenuLocation, setcontextMenuLocation] = useState({x:"", y:""})
+  const [avatarPics, setAvatarPics] = useState({})
+  const [contextMenuLocation, setcontextMenuLocation] = useState({x: "",y: ""})
   useEffect(()=>{
         setphotoList({convention: conventionpic})
+        setAvatarPics({cp: captainPlanet})
       },[])
 
   return (
@@ -59,7 +62,7 @@ export function App() {
       </header>
       <div className="content">
         <Outlet context={[photoList, contextMenuLocation, setcontextMenuLocation]}/>
-        <ContextMenu location={contextMenuLocation}/>
+        <ContextMenu avatars={avatarPics} location={contextMenuLocation}/>
         {/* {cartOpen === "yes" && <MiniCart contents={cartContents}/>} */}
       </div>
     </div>

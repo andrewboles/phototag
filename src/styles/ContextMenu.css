@@ -4,8 +4,28 @@
   	text-align: center;
 	background: white;
 	width: 180px;
-	height: 160px;
+	height: 150px;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	border-radius: 15px;
 	justify-content: space-between;
+}
+
+.menu-item{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 180px;
+	height: 50px;
+}
+
+.menu-avatar{
+	margin: 6px;
+	width: 30px;
+	height: 30px;
+}
+
+.menu-item-title{
+	margin: 6px;
+	/*text-size: 110px;*/
 }
