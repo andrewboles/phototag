@@ -14,7 +14,9 @@ import {
 import { getFirebaseConfig } from './firebase-config'
 
 import conventionpic from "../images/convention.jpeg"
-import captainPlanet from "../images/cp.jpeg"  
+import captainPlanet from "../images/cp.jpeg"
+import fry from "../images/fry.jpg"  
+import patrick from "../images/patrick.png"  
 
 import { initializeApp } from "firebase/app";
 
@@ -40,6 +42,7 @@ import {
 
 const firebaseConfig = getFirebaseConfig()
 const app = initializeApp(firebaseConfig);
+const db = getFirestore()
 
 export function App() {
 
@@ -48,8 +51,25 @@ export function App() {
   const [contextMenuLocation, setcontextMenuLocation] = useState({x: "",y: ""})
   useEffect(()=>{
         setphotoList({convention: conventionpic})
-        setAvatarPics({cp: captainPlanet})
+        setAvatarPics({cp: captainPlanet, fry: fry, patrick: patrick})
+        updateDB()
       },[])
+  const updateDB = async () => {
+    try{
+          const docRef = await addDoc(collection(db, "characterlocations"),{
+            name: "Captain Planet",
+            minx: 1456,
+            maxx: 1520,
+            miny: 1014,
+            maxy: 1139,
+          })
+
+
+          console.log("Document written with id: ",docRef.id)
+        } catch(e){
+          console.error("Error adding document: ",e)
+        }
+  }
 
   return (
     <div id="app-content">
