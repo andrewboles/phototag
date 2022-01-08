@@ -9,7 +9,16 @@
   align-items: center;
 
 }
+nav{
+  display:flex;
+  flex-direction: row;
+}
+
+#home-button{
+  margin: 10px 25px;
+}
 
 #site-label{
+  display: flex;
   margin: 10px 25px;
 }

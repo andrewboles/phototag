@@ -1,0 +1,19 @@
+/*html{
+  display: flex;
+  justify-content:center
+}
+*/
+#leader-container{
+  background: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:150px;
+  width: 100%;
+  /*margin: 100px;*/
+}
+
+.leader-card{
+  display:flex;
+  flex-direction: row
+}

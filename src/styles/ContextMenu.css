@@ -19,6 +19,16 @@
 	height: 50px;
 }
 
+.menu-item-done{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: 180px;
+	height: 50px;
+	background: black;
+}
+
 .menu-avatar{
 	margin: 6px;
 	width: 30px;

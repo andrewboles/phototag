@@ -14,13 +14,13 @@ var ContextMenu = (props) => {
 
   return(
       <div id="selection-menu" style={contentMenuStyle}>
-          <div onClick={e=>{props.checkclick("Captain Planet")}} className="menu-item" id="Captain Planet">
+          <div onClick={e=>{props.checkclick("Captain Planet")}} className={props.chardisplay["Captain Planet"]} id="Captain Planet">
                   <img className="menu-avatar" src={props.avatars.cp}></img><h3 className="menu-item-title">Captain Planet</h3>
                   </div>
-                  <div onClick={e=>{props.checkclick("Patrick Star")}} display={props.chardisplay["Patrick Star"]} className="menu-item" id="Patrick Star">
+                  <div onClick={e=>{props.checkclick("Patrick Star")}} className={props.chardisplay["Patrick Star"]} id="Patrick Star">
                   <img className="menu-avatar" src={props.avatars.patrick}></img><h3 className="menu-item-title">Patrick Star</h3>
                   </div>
-                  <div onClick={e=>{props.checkclick("Fry")}} className="menu-item" id="Fry">
+                  <div onClick={e=>{props.checkclick("Fry")}} className={props.chardisplay["Fry"]} id="Fry">
                   {/* 2341 127  2408 128    2360 197   2404 204*/}
                   <img className="menu-avatar" src={props.avatars.fry}></img><h3 className="menu-item-title">Fry</h3>
                   </div>

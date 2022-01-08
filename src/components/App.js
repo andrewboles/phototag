@@ -4,6 +4,7 @@ import ContextMenu from './ContextMenu'
 import {
   Link,
   Outlet,
+  useNavigate,
 } from "react-router-dom";
 
 import {
@@ -33,6 +34,7 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
+  getDoc
 } from 'firebase/firestore';
 import {
   getStorage,
@@ -46,6 +48,17 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore()
 
 export function App() {
+  const navigate = useNavigate()
+
+  const getLeaders = async () => {
+    const leaders = await getDocs(collection(db, "time"));
+    leaders.forEach((doc) => {
+      setleaderObj(ld=>ld.concat([{
+        name: doc.id,
+        time: doc.data().bestTime
+      }]))
+    })
+  }
 
   const checkClick = async (id) => {
     let correct="no"
@@ -55,10 +68,11 @@ export function App() {
             if(id==doc.data().name && lastClicked[0]<doc.data().maxx && lastClicked[0]>doc.data().minx && lastClicked[1]<doc.data().maxy && lastClicked[1]>doc.data().miny){
               console.log(`correct! you found ${doc.data().name}`)
               setclickcorrect(`correct! you found ${doc.data().name}`)
+              setnumCorrect(num=>num+1)
               setTimeout(() => {setclickcorrect("")}, 5000);
               correct="yes"
                setcharDisplay(chars=>({
-          ...chars,[id]: "none !important"
+          ...chars,[id]: "menu-item-done"
       }))
               
             }
@@ -72,6 +86,13 @@ export function App() {
       console.error("error reading database: ",e)
     }
     setcontextMenuLocation({x: "", y: ""})
+    console.log(numCorrect)
+    if(numCorrect===2){
+      setleaderObj([])
+        getLeaders()
+      setfinalName(playerName)
+      gameOver()
+    }
   }
 
   const [photoList, setphotoList] = useState({})
@@ -82,22 +103,58 @@ export function App() {
   const [contextMenuLocation, setcontextMenuLocation] = useState({x: "",y: ""})
   const [charDisplay, setcharDisplay] = useState({})
   const [seconds, setSeconds] = useState(0);
-
+  const [gameStart, setgameStart] = useState("")
+  const [playerName, setplayerName] = useState(" ")
+  const [numCorrect, setnumCorrect] = useState(0)
+  const [finalTime, setfinalTime] = useState(0)
+  const [finalName, setfinalName] = useState("")
+  const [leaderObj, setleaderObj] = useState([])
   useEffect(()=>{
         setphotoList({convention: conventionpic})
-        setcharDisplay({["Captain Planet"]: "block", ["Patrick Star"]: "block",["Fry"]: "block"})
+        setcharDisplay({["Captain Planet"]: "menu-item", ["Patrick Star"]: "menu-item",["Fry"]: "menu-item"})
         setAvatarPics({cp: captainPlanet, fry: fry, patrick: patrick})
         updatecharDB("Captain Planet",1456,1520,1014,1139)
         updatecharDB("Patrick Star",2750,2804,372,465)
         updatecharDB("Fry",2341,2408,127,204)
+        setleaderObj([])
+        getLeaders()
+        setnumCorrect(0)
       },[]);
+  useEffect(()=>{
+    const getRecord = async () =>{
+      let response = await checkTimeRecord(playerName)
+      console.log(response)
+      if(response){
+        setSeconds(response)
+      }
+    }
 
-  useEffect(() => {
-    let interval = null;
-      interval = setInterval(() => {
-        setSeconds(seconds => seconds + 1);
-      }, 1000);
-  }, []);
+    getRecord()
+  },[playerName])
+
+  const checkTimeRecord = async (name) => {
+    let previousTime = null
+    try {
+      const querySnapshot = await getDocs(collection(db, "time"));
+          querySnapshot.forEach((doc) => {
+            if(doc.id===name){
+              previousTime = doc.data().bestTime
+            }
+          });
+    } catch(e) {
+      console.error("error reading database: ",e)
+    }
+    console.log(`previous time: ${previousTime}`)
+    return previousTime
+  }
+
+  
+  useEffect(()=>{
+    setDoc(doc(db, "time", `${playerName}`), {
+          bestTime: seconds,
+        });
+  },[seconds])
+
   const updatecharDB = async (charname, minx, maxx, miny, maxy) => {
     let recordexists = "no"
     try{  
@@ -111,7 +168,6 @@ export function App() {
     }
 
     if(recordexists==="yes") {
-      console.log("record already exists")
       return
     }
 
@@ -131,20 +187,37 @@ export function App() {
         }
   }
 
+  const gameOver = async () => {
+        const docRef = doc(db, "time", `${playerName}`);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data());
+          setfinalTime(docSnap.data().bestTime)
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+
+        navigate('leaderboard')
+  }
+
   return (
     <div id="app-content">
       <header id="app-header">
         <h1 id="site-label">Photo Tag</h1>
         
         <nav>
-          <Link to="main">Game</Link> |{" "}
-          <h2 id="time">{seconds}</h2>
+          {/* <Link to="main">Game</Link> |{" "} */}
+          <h2 id="time">Here's Your Time, {playerName}: {seconds}</h2>
           <h3 id="clickcorrect">{clickcorrect}</h3>
+          <button id="home-button" onClick={e=>{navigate('/')}}>Go Home{"/"}Start Over</button>
+          <button id="home-button" onClick={e=>{navigate('leaderboard')}}>Leaderboard</button>
           {/* <Link to='fullcart' state={{cartContents: cartContents, cheese: "67"}}>Cart - {totalUp()}</Link> */}
         </nav>
       </header>
       <div className="content">
-        <Outlet context={[photoList, contextMenuLocation, setcontextMenuLocation, checkClick, characterSelected, setcharacterSeleted, lastClicked, setlastClicked]}/>
+        <Outlet context={[photoList, contextMenuLocation, setcontextMenuLocation, checkClick, characterSelected, setcharacterSeleted, lastClicked, setlastClicked, gameStart, setgameStart, playerName, setplayerName, seconds, setSeconds, finalTime, finalName, leaderObj, setnumCorrect]}/>
         <ContextMenu chardisplay={charDisplay} checkclick={checkClick} avatars={avatarPics} location={contextMenuLocation}/>
         {/* {cartOpen === "yes" && <MiniCart contents={cartContents}/>} */}
       </div>

@@ -1,0 +1,14 @@
+/*html{
+  display: flex;
+  justify-content:center
+}
+*/
+#container{
+  background: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:500px;
+  width: 500px;
+  /*margin: 100px;*/
+}
