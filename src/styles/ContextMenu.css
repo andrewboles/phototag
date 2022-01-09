@@ -26,7 +26,7 @@
 	align-items: center;
 	width: 180px;
 	height: 50px;
-	background: black;
+	opacity: 10%;
 }
 
 .menu-avatar{

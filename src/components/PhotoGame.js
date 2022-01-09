@@ -6,7 +6,7 @@ import "../styles/PhotoGame.css"
 const PhotoGame = (props) => {
 	const [photoList, contextMenuLocation, setcontextMenuLocation, checkClick, characterSelected, setcharacterSeleted, lastClicked, setlastClicked, gameStart, setgameStart, playerName, setplayerName, seconds, setSeconds, finalTime, finalName, leaderObj, setnumCorrect] = useOutletContext()
 	useEffect(() => {
-		
+
     let interval = null;
       interval = setInterval(() => {
         setSeconds(seconds => seconds + 1);
@@ -16,7 +16,8 @@ const PhotoGame = (props) => {
       	setplayerName(" ")
       	setSeconds(0)
       	clearInterval(interval)}
-      	setnumCorrect(0)
+      	setnumCorrect([])
+      	setcontextMenuLocation({x: "", y: ""})
   }, []);
 
 

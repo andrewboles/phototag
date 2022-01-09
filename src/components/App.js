@@ -66,33 +66,37 @@ export function App() {
       const querySnapshot = await getDocs(collection(db, "characterlocations"));
           querySnapshot.forEach((doc) => {
             if(id==doc.data().name && lastClicked[0]<doc.data().maxx && lastClicked[0]>doc.data().minx && lastClicked[1]<doc.data().maxy && lastClicked[1]>doc.data().miny){
-              console.log(`correct! you found ${doc.data().name}`)
               setclickcorrect(`correct! you found ${doc.data().name}`)
-              setnumCorrect(num=>num+1)
+              if(!numCorrect.includes(id)){
+                setnumCorrect(num=>num.concat([id]))
+              }
               setTimeout(() => {setclickcorrect("")}, 5000);
               correct="yes"
                setcharDisplay(chars=>({
-          ...chars,[id]: "menu-item-done"
-      }))
+                  ...chars,[id]: "menu-item-done"
+              }))
               
             }
-            if(correct=="no"){
+            
+          });
+          if(correct=="no"){
               setclickcorrect("Sorry, that wasn't right. Try Again!")
               setTimeout(() => {setclickcorrect("")}, 5000);
             }
-          });
-          
+        
     } catch(e){
       console.error("error reading database: ",e)
     }
     setcontextMenuLocation({x: "", y: ""})
-    console.log(numCorrect)
-    if(numCorrect===2){
-      setleaderObj([])
-        getLeaders()
-      setfinalName(playerName)
-      gameOver()
-    }
+  }
+
+  const checkGameOver = () => {
+    if(numCorrect.includes("Fry") && numCorrect.includes("Captain Planet") && numCorrect.includes("Patrick Star")){
+              setleaderObj([])
+              getLeaders()
+              setfinalName(playerName)
+              gameOver()
+             }
   }
 
   const [photoList, setphotoList] = useState({})
@@ -105,10 +109,16 @@ export function App() {
   const [seconds, setSeconds] = useState(0);
   const [gameStart, setgameStart] = useState("")
   const [playerName, setplayerName] = useState(" ")
-  const [numCorrect, setnumCorrect] = useState(0)
+  const [numCorrect, setnumCorrect] = useState([])
   const [finalTime, setfinalTime] = useState(0)
   const [finalName, setfinalName] = useState("")
   const [leaderObj, setleaderObj] = useState([])
+
+
+  useEffect(()=>{
+    checkGameOver()
+  },[numCorrect])
+
   useEffect(()=>{
         setphotoList({convention: conventionpic})
         setcharDisplay({["Captain Planet"]: "menu-item", ["Patrick Star"]: "menu-item",["Fry"]: "menu-item"})
@@ -118,7 +128,7 @@ export function App() {
         updatecharDB("Fry",2341,2408,127,204)
         setleaderObj([])
         getLeaders()
-        setnumCorrect(0)
+        setnumCorrect([])
       },[]);
   useEffect(()=>{
     const getRecord = async () =>{
@@ -188,6 +198,8 @@ export function App() {
   }
 
   const gameOver = async () => {
+        setcharDisplay({["Captain Planet"]: "menu-item", ["Patrick Star"]: "menu-item",["Fry"]: "menu-item"})
+        setnumCorrect([])
         const docRef = doc(db, "time", `${playerName}`);
         const docSnap = await getDoc(docRef);
 
@@ -213,8 +225,19 @@ export function App() {
           <h3 id="clickcorrect">{clickcorrect}</h3>
           <button id="home-button" onClick={e=>{navigate('/')}}>Go Home{"/"}Start Over</button>
           <button id="home-button" onClick={e=>{navigate('leaderboard')}}>Leaderboard</button>
+         
           {/* <Link to='fullcart' state={{cartContents: cartContents, cheese: "67"}}>Cart - {totalUp()}</Link> */}
         </nav>
+        <h3>Find: </h3>
+         <div className={charDisplay["Captain Planet"]}>
+           <img className="menu-avatar" src={avatarPics["cp"]}></img><h3 className="menu-item-title">Captain Planet</h3>
+         </div>
+         <div className={charDisplay["Patrick Star"]}>
+           <img className="menu-avatar" src={avatarPics["patrick"]}></img><h3 className="menu-item-title">Patrick Star</h3>
+         </div>
+         <div className={charDisplay["Fry"]}>
+           <img className="menu-avatar" src={avatarPics["fry"]}></img><h3 className="menu-item-title">Fry</h3>
+         </div>
       </header>
       <div className="content">
         <Outlet context={[photoList, contextMenuLocation, setcontextMenuLocation, checkClick, characterSelected, setcharacterSeleted, lastClicked, setlastClicked, gameStart, setgameStart, playerName, setplayerName, seconds, setSeconds, finalTime, finalName, leaderObj, setnumCorrect]}/>

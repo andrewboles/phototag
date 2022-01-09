@@ -15,5 +15,13 @@
 
 .leader-card{
   display:flex;
-  flex-direction: row
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border: 4mm ridge rgba(170, 50, 220, .6);
+}
+
+.player-name{
+  display: flex;
+  margin: 5px 100px;
 }
